@@ -15,13 +15,15 @@
   "main": "index.js",
   "_moduleAliases": {
     "$": "./",
-    "@": "./app"
+    "@": "./algorithms",
+    "@/utils": "./algorithms/utils"
   },
   "scripts": {
     "pre-install": "npm install --package-lock-only --ignore-scripts --no-audit && npx npm-force-resolutions",
     "exec": "npx ts-node --transpile-only ./algorithms/exec.ts",
     "compile": "npm run clean && tsc --build",
     "clean": "tsc --build --clean",
+    "lock": "npx ts-node --transpile-only algorithms/utils/file/read-only/build.ts",
     "resolve": "npx npm-force-resolutions && npm install",
     "test": "npm run lint --fix && npm run test-local",
     "kill-port": "kill-port 7001 7002 7003",
