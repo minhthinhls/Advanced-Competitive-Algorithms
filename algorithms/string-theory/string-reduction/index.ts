@@ -29,13 +29,11 @@ const mapReducer: {[p: string]: string} = {
  ** @returns {number}
  **/
 const reduceV1 = (str: string) => {
-    /** TODO: To solve case ['aaaabbbb'] and ['cbbcccc'] -> Count all element and arrange them in [maxFrequency, ..., minFrequency] ~!*/
     const stack = new Stack<string>(`${str[0]}`);
     /** Start Looping from the 2nd item ~!*/
     for (let i = 1; i < str.length; i++) {
         let top = stack.peek();
         let curr = str[i];
-        // console.log('->', stack, 'top', top, 'curr', curr);
         if (curr !== 'a' && curr !== 'b' && curr !== 'c') {
             throw new EvalError(">>> Do not use Array with value other than [a, b, c] <<<");
         }
@@ -45,7 +43,6 @@ const reduceV1 = (str: string) => {
          ** > The top value is 'a';
          **/
         while (curr !== top && stack.size() > 0) {
-            // console.log(stack, 'top', top, 'curr', curr);
             top = stack.pop() as string;
             const pair = top + curr;
             curr = mapReducer[pair];
@@ -65,12 +62,33 @@ const reduceV1 = (str: string) => {
 /**
  ** You MUST SOLVE this case
  ** @example
- ** > 'aaaa bbbb' -> aa a c b bb -> aa b bbb -> ac bbb -> FAILED [bbbb] -> MUST BE [aa / bb]
+ ** > 'aaaabbbb' -> aaa[c]bbb -> aa[b]bbb -> a[c]bbb -> FAILED [bbbb] -> MUST BE [aa / bb]
  ** ~!*/
-const args = ['cab', 'bcab', 'ccccc', 'aaaabbbb', 'bbbcbbaca', 'cbbccccc']; // -> aa/bb, not `bbbb`
+const args = ['cab', 'bcab', 'ccccc', 'aaaabbbb', 'bbbcbbaca', 'cbbccccc'];
 args.forEach((str) => {
     return console.log(str, '->', reduceV1(str));
 });
+
+declare type Key = 'a' | 'b' | 'c';
+
+const topologicalKeySort = (object: Object) => {
+    const keys = Object.keys(object);
+    const sorted = keys.map((key) => {
+        return [key, {[key]: object[key]}] as [string, Object];
+    }).sort(([k1, o1], [k2, o2]) => {
+        return o1[k1] > o2[k2] ? -1 : 1;
+    }).reduce((prev, [key, object]) => {
+        prev[key] = object[key];
+        return prev;
+    }, {} as Object);
+    return sorted as Record<Key, number>;
+};
+
+const getCounter = (): Record<Key, number> & Required<{sortKey: () => Record<Key, number>}> => {
+    const counter = {a: 0, b: 0, c: 0};
+    Object.assign(Object.getPrototypeOf(counter), {sortKey: () => topologicalKeySort(counter)});
+    return counter as Record<Key, number> & Required<{sortKey: () => Record<Key, number>}>;
+};
 
 /**
  ** @description - For solving Problem in Version 1.
@@ -80,7 +98,46 @@ args.forEach((str) => {
  ** @returns {number}
  **/
 const reduceV2 = (str: string) => {
-    return str && 0;
+    const length = str.length;
+    const counter = getCounter();
+    /** Count Displaying Frequency of all element ~!*/
+    for (let i = 0; i < length; i++) {
+        const char = str[i];
+        switch (char) {
+            case 'a':
+                counter.a++;
+                break;
+            case 'b':
+                counter.b++;
+                break;
+            case 'c':
+                counter.c++;
+                break;
+        }
+    }
+    /** @Step1: Re-Arrange Array [a, b, c, b, c, c, c, c] into [c, c, c, c, c, b, b, a] ~!*/
+    let sortStr = '';
+    const counterArr = [...Object.keys(counter.sortKey())] as [Key, Key, Key];
+    for (const key of counterArr) {
+        /** Frequency display of current key ~!*/
+        const frequency = counter[key];
+        for (let i = 0; i < frequency; i++) {
+            sortStr += key;
+        }
+    }
+
+    /**
+     ** @take-note: TODO: This function still failed at ['b', 'b', 'b', 'b', 'a', 'a', 'a', 'a'].
+     ** @description - Because it has not yet decided favourable traversing segment.
+     ** @example
+     ** @step1: ['b', 'b', 'b', 'c', 'a', 'a', 'a']; // Num A equals Num B left.
+     ** @step2: ['b', 'b', 'a', 'a', 'a', 'a']; // Must take the segment between [a] and [b].
+     ** @step3: ['b', 'c', 'a', 'a', 'a']; // Not at this point, do not take [b] and [c]. Instead take [c] and [a].
+     ** @step4: ['b', 'b', 'a', 'a']; // Num A equals Num B left.
+     ** @step5: ['b', 'c', 'a']; // Num A equals Num B left.
+     ** @step6: ['a', 'a'] || ['b', 'b']; // Either take [b] and [c] or [c] and [a].
+     ** ~!*/
+    return reduceV1(sortStr);
 };
 
 args.forEach((str) => {
