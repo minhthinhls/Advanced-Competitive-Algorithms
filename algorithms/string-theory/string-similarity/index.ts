@@ -13,7 +13,7 @@ import reader from "@/reader";
 /**
  ** @description The following is the base URL of Hackerrank Problems.
  ** @see {@link https://www.hackerrank.com/challenges/string-similarity/problem}
- ** @tutorial The following is the base URL of Hackerrank Problems.
+ ** @tutorial The following is the tutorial URL of Hackerrank Problems.
  ** @see {@link https://www.youtube.com/watch?v=CpZh4eF8QBw}
  **/
 const io: Array<[string, number]> = [
@@ -146,12 +146,12 @@ reader('algorithms/string-theory/string-similarity/input05.txt', (str, line) => 
         }
     }
     const [count] = similar(str);
-    return console.log('> @test:', line, 'length:', str.length, 'count:', count, 'expect:', expect[2], 'correct:', count === expect[2]);
+    return console.log('> @test:', line, 'size:', str.length, 'output:', count, 'expect:', expect[2], 'PASSED:', count === expect[2]);
 }, 2);
 
 io.forEach(([input, output], index) => {
     const [count, _Z] = similar(input);
-    return console.log('> @test:', index, 'length:', input.length, 'count:', count, 'expect:', output, 'correct:', count === output);
+    return console.log('> @test:', index, 'size:', input.length, 'output:', count, 'expect:', output, 'PASSED:', count === output);
 });
 
 export default {};

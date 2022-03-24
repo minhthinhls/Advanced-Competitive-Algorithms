@@ -11,7 +11,13 @@ export declare type IndexSignatures = string | number | symbol;
 /** Custom Types Helper !*/
 export declare type Primitives = boolean | IndexSignatures | Nullable;
 /** Custom Types Helper !*/
-export declare type Nullable<T extends any = never> = T | null | void | undefined | "";
+export declare type Falsifiable<T extends any = never> = T | null | void | undefined | "";
+/** Custom Types Helper !*/
+export declare type Truthfully<T> =  T extends infer R | null | void | undefined | "" ? R : T;
+/** Custom Types Helper !*/
+export declare type Nullable<T extends any = never> = T | null;
+/** Custom Types Helper !*/
+export declare type NonNullable<T> = T extends infer R | null ? R : T;
 
 /**
  ** - Filter remove all Optional Keys and potential Nullable values from [Key->Value] (--Linear Version--)

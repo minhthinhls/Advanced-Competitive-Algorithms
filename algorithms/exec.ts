@@ -18,16 +18,12 @@ import type {/*ArrowFunc*/} from "@/types";
 // require('./string-theory/string-reduction');
 // require('./string-theory/morgan-string');
 // require('./string-theory/string-similarity');
+// require('./dynamic-programming/stock-maximize');
+require('./dynamic-programming/unbounded-knapsack');
 
-import {Heap} from "@/utils";
-
-const heap = new Heap<number>([1, 3, 5, 4, 6, 13, 10, 9, 8, 15, 17]/*.sort(() => .5 - Math.random())*/);
-heap.print();
-heap.build();
-heap.print();
-heap.push(100);
-heap.print();
-console.log('max:', heap.pop());
-heap.print();
+/*import {Heap} from "@/utils";
+const heap = new Heap<number>([1, 3, 5, 4, 6, 13, 10, 9, 8, 15, 17]/!*.sort(() => .5 - Math.random())*!/);
+heap.print(); heap.build(); heap.print(); heap.push(100); heap.print();
+console.log('max:', heap.pop()); heap.print();*/
 
 export default {};
