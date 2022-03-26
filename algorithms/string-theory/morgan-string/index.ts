@@ -10,8 +10,9 @@ require('module-alias/register');
 /**
  ** @description The following is the base URL of Hackerrank Problems.
  ** @see {@link https://www.hackerrank.com/challenges/morgan-and-a-string/problem}
+ ** @description The following is this published solution URL of Hackerrank Problems.
+ ** @see {@link https://www.hackerrank.com/challenges/morgan-and-a-string/forum/comments/1101785}
  **/
-
 const io: Array<[[string, string], string]> = [
     [['JACK', 'DANIEL'], 'DAJACKNIEL'],
     [['ABACABA', 'ABACABA'], 'AABABACABACABA'],

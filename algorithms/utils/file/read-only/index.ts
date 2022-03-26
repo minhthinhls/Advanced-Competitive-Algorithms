@@ -4,6 +4,13 @@ import {FilePermission} from "./core";
 
 export const exec = () => {
 
+    /** Project [Algorithms] Sub-Modules !*/
+    __PermissionHandler__("algorithms/**/*.ts", {
+        OWNER: FilePermission.EXEC_READ,
+        GROUP: FilePermission.READ_ONLY,
+        OTHERS: FilePermission.READ_ONLY,
+    });
+
     /** Project [Utils & Helpers] Interfaces !*/
     __PermissionHandler__("algorithms/utils/**/*.ts", {
         OWNER: FilePermission.EXEC_READ,
