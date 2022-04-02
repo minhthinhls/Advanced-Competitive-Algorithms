@@ -122,6 +122,7 @@
   ],
   "include": [
     "./algorithms/**/*",
+    "./contests/**/*",
     "./config/**/*",
   ],
 }
