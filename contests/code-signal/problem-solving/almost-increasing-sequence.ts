@@ -12,9 +12,9 @@
 require("module-alias/register");
 
 /**
- ** @description The following is the base URL of Hackerrank Problems.
+ ** @description The following is the base URL of Code-Signal Problems.
  ** @see {@link https://app.codesignal.com/arcade/intro/level-2/2mxbGwLzvkTCKAJMG}
- ** @description The following is this published solution URL of Code Signal Problems.
+ ** @description The following is this published solution URL of Code-Signal Problems.
  ** @see {@link https://stackoverflow.com/questions/43017251/solve-almostincreasingsequence-codefights}
  **/
 
