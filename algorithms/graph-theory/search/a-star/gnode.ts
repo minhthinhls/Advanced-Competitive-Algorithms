@@ -66,6 +66,7 @@ export class GNode {
         }
         /** When changing GNode Parent, this value will be updated also ~!*/
         const currGraphCost = Math.sqrt(Math.abs(this.x - this.parent.x) ** 2 + Math.abs(this.y - this.parent.y) ** 2);
+        /** @description: `${currGraphCost}` will be [1] if ${parent} && ${child} adjacent. Otherwise diagonally, the value will be [1.4] ~!*/
         return this.prevGraphCost = round(currGraphCost + this.parent.gCost());
     }
 
@@ -118,7 +119,7 @@ export class GNode {
         this.parent = node;
         /** Force GNode Path to Re-Calculate Graph Cost once again ~!*/
         this.prevGraphCost = null;
-        /** Force GNode Path to Re-Calculate Graph Cost once again ~!*/
+        /** Force GNode Path to Re-Calculate Function Cost once again ~!*/
         this.prevFunctionCost = null;
     }
 

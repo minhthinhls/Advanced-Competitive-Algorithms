@@ -33,6 +33,19 @@ export class Heap<T extends string | number> extends Object {
         return this;
     }
 
+    protected format = <T extends string | number>(value: T, placeholder: number): string => {
+        if (!value && value !== 0) {
+            return "-".repeat(placeholder);
+        }
+        const number = Number.call(null, value).toString();
+        const size = number.length;
+        if (size > placeholder) {
+            throw new EvalError(">>> Place-Holder is smaller than Number Length <<<");
+        }
+        const pads = (placeholder - size) >> 1;
+        return "-".repeat(pads) + number + "-".repeat(placeholder - size - pads);
+    };
+
     protected swap<K extends number>(a: K, b: K): void {
         const swap = this.heap[a];
         this.heap[a] = this.heap[b];
@@ -161,9 +174,10 @@ export class Heap<T extends string | number> extends Object {
     }
 
     /**
+     ** @deprecated
      ** @returns {void}
      **/
-    public print(): void {
+    public display(): void {
         const size = this.heap.length;
         const maxDigit = Math.max(...this.heap as Array<number>);
         const maxSpace = " ".repeat(Math.floor(Math.log10(maxDigit)));
@@ -215,6 +229,48 @@ export class Heap<T extends string | number> extends Object {
                 }
             }
             str = line.toString() + "\n" + str; /** Prepend line ~!*/
+        }
+        str += "\n" + "------------------------------------------";
+        return console.log(str);
+    }
+
+    /**
+     ** @description - Modern Heap Display Method designed by @EdgarHuynh.
+     ** @returns {void}
+     **/
+    public print(): void {
+        const size = this.heap.length;
+        const maxDigit = Math.max(...this.heap as Array<number>);
+        /** Place holder must be odds [1, 3, 5, 7, 9, 11, ...] ~!*/
+        const placeholder = (Number.call(null, maxDigit).toString().length & ~1) + 1;
+        /** Max Depth of Binary Search Tree from [0] to [N] ~!*/
+        const maxDepth = Math.floor(Math.log(size) / Math.log(2)); // Min Depth = 0; [Root Level]
+        /** Total Spaces of Line == <The Amount of placeholders> && <The Amount of Space-1 between Placeholders> ~!*/
+        const totalLineSpaces = placeholder * (2 ** maxDepth) + (2 ** maxDepth - 1);
+        /** Calculate the spaces need to pad to the Rear-Side and Between each Placeholders ~!*/
+        const calculateSpace = (level: number): [number, number] => {
+            /** @equation: ${TotalSpaces} - ${placeholder} * (2 ^ level) == 2x + (2 ^ level - 1)(2x + 1) ~!*/
+            /** @constraint: ${BetweenSpaces} == (2x + 1) <- Space between each placeholders ~!*/
+            const rear = (totalLineSpaces - (placeholder + 1) * (2 ** level) + 1) / Math.pow(2, level + 1);
+            return [rear, 2 * rear + 1];
+        };
+        console.log("------------------------------------------");
+        console.log(">>> Array representation of Heap Array <<<");
+        console.log("------------------------------------------\n");
+
+        let str = ''; /** Heap string builder ~!*/
+        for (let level = 0; level <= maxDepth; level++) {
+            const [rear, middle] = calculateSpace(level);
+            if (level === 0) {
+                str += " ".repeat(rear) + this.format(this.heap[0], placeholder) + " ".repeat(rear) + "\n";
+                continue;
+            }
+            const elements: Array<string> = [];
+            /** @description: Looping through each Tree-Layer. Ranged from [2^level - 1] to [2^(level+1) - 2] ~!*/
+            for (let i = Math.pow(2, level) - 1; i <= Math.pow(2, level + 1) - 2; i++) {
+                elements.push(this.format(this.heap[i], placeholder));
+            }
+            str += " ".repeat(rear) + elements.join(" ".repeat(middle)) + " ".repeat(rear) + "\n";
         }
         str += "\n" + "------------------------------------------";
         return console.log(str);

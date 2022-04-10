@@ -6,6 +6,8 @@
 
 declare type Nullable<T> = T | null;
 
+declare type Coordinate = [number, number];
+
 import GNode from "./gnode";
 
 const __Default_Map__ = [
@@ -19,7 +21,7 @@ export class Graph {
 
     private readonly root: GNode;
     private readonly dest: GNode;
-    private readonly graph: Array<Array<GNode>>;
+    private readonly graph: Array<Array<Nullable<GNode>>>;
 
     private readonly maxHeight: number;
     private readonly maxWidth: number;
@@ -29,7 +31,7 @@ export class Graph {
     /** The HashSet of Nodes already evaluated ~!*/
     private readonly __CLOSE__: Set<GNode> = new Set();
 
-    constructor(root: [number, number] | GNode, dest: [number, number] | GNode, map: Array<Array<number | GNode>> = __Default_Map__) {
+    constructor(root: Coordinate | GNode, dest: Coordinate | GNode, map: Array<Array<number>> = __Default_Map__) {
         /** For Dependency Injection & Inversion of Control ~!*/
         const inject = {
             /** Every GNode can now populate its surrounding area without fully knowledgeable of this Graph ~!*/
@@ -61,6 +63,10 @@ export class Graph {
         this.dest = dest instanceof GNode ? dest : new GNode({x: dest[0], y: dest[1]}, {...inject});
         const numRow = this.maxHeight = map.length;
         const baseCol = this.maxWidth = map[0].length;
+
+        /** Construct 2D Matrix Array with all <Nullable> value ~!*/
+        this.graph = Array.from({length: this.maxHeight}, () => new Array(this.maxWidth));
+
         for (let row = 0; row < numRow; row++) {
             const numCol = map[row].length;
             if (numCol !== baseCol) {
@@ -68,25 +74,25 @@ export class Graph {
             }
             for (let col = 0; col < baseCol; col++) {
                 const node = map[row][col];
-                if (typeof node !== "number" || isNaN(node)) {
+                if (isNaN(node)) {
                     /** Skip this Node since it cannot be traverse ~!*/
+                    this.graph[row][col] = null;
                     continue;
                 }
                 /** For Reference Comparison. Will not create new GNode ~!*/
                 if (root[0] === row && root[1] === col) {
-                    map[row][col] = this.root;
+                    this.graph[row][col] = this.root;
                     continue;
                 }
                 /** For Reference Comparison. Will not create new GNode ~!*/
                 if (dest[0] === row && dest[1] === col) {
-                    map[row][col] = this.dest;
+                    this.graph[row][col] = this.dest;
                     continue;
                 }
                 /** Convert all value within ``${map}`` into GNode ~!*/
-                map[row][col] = new GNode({x: row, y: col}, {...inject});
+                this.graph[row][col] = new GNode({x: row, y: col}, {...inject});
             }
         }
-        this.graph = map as Array<Array<GNode>>;
         /** Push the Starting Node to Evaluate HashSet ~!*/
         this.__OPEN__.add(this.root);
     }
@@ -125,9 +131,9 @@ export class Graph {
         if (y < 0 || y > maxWidth) {
             return null;
         }
-        const __G_Node__: GNode | typeof NaN = this.graph[x][y];
+        const __G_Node__ = this.graph[x][y];
         /** Handle Not Traversable GNode ~!*/
-        if (typeof __G_Node__ === "number" && isNaN(__G_Node__)) {
+        if (!__G_Node__) {
             return null;
         }
         /** When populating children GNode from parent GNode ~!*/
@@ -258,7 +264,7 @@ export class Graph {
             for (let col = 0; col < this.maxWidth; col++) {
                 const node = this.graph[row][col];
                 /** Value is [NaN] here ~!*/
-                if (typeof node === "number") {
+                if (!node) {
                     args.push("|");
                     /** Skip this Node since it cannot be traverse ~!*/
                     continue;
@@ -273,7 +279,7 @@ export class Graph {
                     args.push("$");
                     continue;
                 }
-                /** Value is [Target Node] here ~!*/
+                /** Value are [Traversed Node] here ~!*/
                 if (path.includes(node)) {
                     args.push("*");
                     continue;
