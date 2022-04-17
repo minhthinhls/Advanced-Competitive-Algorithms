@@ -19,7 +19,7 @@ export class Queue<T extends any> extends Object {
      ** @param {T} item
      ** @returns {Array<T>}
      **/
-    public enqueue(item: T) {
+    public enqueue(item: T): Array<T> {
         this.items.push(item);
         return this.items;
     }
@@ -30,7 +30,7 @@ export class Queue<T extends any> extends Object {
      ** @template {T}
      ** @returns {T}
      ** @ts-ignore ~!*/
-    private _dequeue() {
+    private _dequeue(): T {
         /** If the queue is empty, return immediately !*/
         if (this.items.length === 0) {
             throw new ReferenceError("The Queue has already been empty !");
@@ -53,14 +53,14 @@ export class Queue<T extends any> extends Object {
      ** @template {T}
      ** @returns {T}
      **/
-    public dequeue() {
+    public dequeue(): T {
         /** If the queue is empty, return immediately !*/
         if (this.items.length === 0) {
             throw new ReferenceError("The Queue has already been empty !");
         }
 
         /** Return the dequeued item !*/
-        return this.items.shift();
+        return this.items.shift() as T;
     }
 
     /**
@@ -69,16 +69,16 @@ export class Queue<T extends any> extends Object {
      ** @template {T}
      ** @returns {T}
      ** @ts-ignore ~!*/
-    private _peek() {
-        return this.items.length > 0 ? this.items[this.offset] : undefined;
+    private _peek(): T {
+        return this.items[this.offset];
     }
 
     /**
      ** @template {T}
      ** @returns {T}
      **/
-    public peek() {
-        return this.items.length > 0 ? this.items[0] : undefined;
+    public peek(): T {
+        return this.items[0];
     }
 
     /**
@@ -86,21 +86,21 @@ export class Queue<T extends any> extends Object {
      ** @deprecated
      ** @returns {number}
      ** @ts-ignore ~!*/
-    private _size() {
+    private _size(): number {
         return this.items.length - this.offset;
     }
 
     /**
      ** @returns {number}
      **/
-    public size() {
+    public size(): number {
         return this.items.length;
     }
 
     /**
      ** @returns {boolean}
      **/
-    public isEmpty() {
+    public isEmpty(): boolean {
         return this.items.length === 0;
     }
 
